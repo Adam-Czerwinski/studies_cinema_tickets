@@ -1,4 +1,5 @@
 ﻿using CinemaTickets.Models;
+using CinemaTickets.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
@@ -23,6 +24,7 @@ namespace CinemaTickets
         {
             services.AddDbContext<CinematicketsContext>(options => options.UseSqlServer("Data Source=localhost,1433;Initial Catalog=cinematickets;User ID=sa;Password=Qweasd#21;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"));
             services.AddSingleton<MainWindow>();
+            services.AddScoped<IEmployeeRepository, EmployeeRepository>();
         }
 
         private void OnStartup(object sender, StartupEventArgs e)
