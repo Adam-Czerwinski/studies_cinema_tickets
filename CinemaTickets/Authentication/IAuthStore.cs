@@ -5,12 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CinemaTickets.Repositories.Auth
+namespace CinemaTickets.Authentication
 {
     public interface IAuthStore
     {
-        string? Login { get; set; }
-        AccountType? Type { get; set; }
+        string? Login { get; }
+        AccountType? Type { get; }
         void Store(AccountType type, string login);
 
         bool IsLogged();

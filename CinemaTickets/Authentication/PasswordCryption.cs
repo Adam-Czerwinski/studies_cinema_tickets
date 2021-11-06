@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CinemaTickets.Repositories
+namespace CinemaTickets.Authentication
 {
     public class PasswordCryption : IPasswordCryption
     {

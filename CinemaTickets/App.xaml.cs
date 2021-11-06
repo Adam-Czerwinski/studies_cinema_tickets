@@ -1,4 +1,5 @@
-﻿using CinemaTickets.Models;
+﻿using CinemaTickets.Authentication;
+using CinemaTickets.Models;
 using CinemaTickets.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,7 +25,16 @@ namespace CinemaTickets
         {
             services.AddDbContext<CinematicketsContext>(options => options.UseSqlServer("Data Source=localhost,1433;Initial Catalog=cinematickets;User ID=sa;Password=Qweasd#21;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"));
             services.AddSingleton<MainWindow>();
+
+            services.AddScoped<IClientRepository, ClientRepository>();
             services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+            services.AddScoped<IHallRepository, HallRepository>();
+            services.AddScoped<IMovieRepository, MovieRepository>();
+            services.AddScoped<ISeanceRegistrationRepository, SeanceRegistrationRepository>();
+            services.AddScoped<ISeanceRepository, SeanceRepository>();
+
+            services.AddScoped<IPasswordCryption, PasswordCryption>();
+            services.AddScoped<IAuthStore, AuthStore>();
         }
 
         private void OnStartup(object sender, StartupEventArgs e)
