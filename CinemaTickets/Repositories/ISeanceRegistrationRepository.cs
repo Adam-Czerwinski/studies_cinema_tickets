@@ -7,12 +7,8 @@ using System.Threading.Tasks;
 
 namespace CinemaTickets.Repositories
 {
-    public interface IEmployeeRepository
+    public interface ISeanceRegistrationRepository
     {
-        Task<Employee> AddEmployeeAsync(Employee employee);
-
-        Task RemoveEmployeeAsync(Employee employee);
-
-        List<Employee> GetEmployees();
+        Task<ClientsMoviesHall> AttendAsync(ClientsMoviesHall clientsMoviesHall);
     }
 }

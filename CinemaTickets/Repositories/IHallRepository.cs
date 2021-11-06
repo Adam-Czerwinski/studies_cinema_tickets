@@ -7,12 +7,14 @@ using System.Threading.Tasks;
 
 namespace CinemaTickets.Repositories
 {
-    public interface IEmployeeRepository
+    internal interface IHallRepository
     {
-        Task<Employee> AddEmployeeAsync(Employee employee);
+        Task<Hall> AddHallAsync(Hall hall);
 
-        Task RemoveEmployeeAsync(Employee employee);
+        Task<Hall> UpdateHallAsync(Hall hall);
 
-        List<Employee> GetEmployees();
+        Task RemoveHallAsync(Hall hall);
+
+        List<Hall> GetHalls();
     }
 }
