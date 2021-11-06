@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using CinemaTickets.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
 
 namespace CinemaTickets
@@ -13,5 +10,25 @@ namespace CinemaTickets
     /// </summary>
     public partial class App : Application
     {
+        private ServiceProvider serviceProvider;
+
+        public App()
+        {
+            ServiceCollection services = new();
+            ConfigureServices(services);
+            serviceProvider = services.BuildServiceProvider();
+        }
+
+        private void ConfigureServices(ServiceCollection services)
+        {
+            services.AddDbContext<CinematicketsContext>(options => options.UseSqlServer("Data Source=localhost,1433;Initial Catalog=cinematickets;User ID=sa;Password=Qweasd#21;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"));
+            services.AddSingleton<MainWindow>();
+        }
+
+        private void OnStartup(object sender, StartupEventArgs e)
+        {
+            var mainWindow = serviceProvider.GetService<MainWindow>();
+            mainWindow?.Show();
+        }
     }
 }
