@@ -1,5 +1,6 @@
 ﻿using CinemaTickets.Authentication;
 using CinemaTickets.Models;
+using CinemaTickets.Reactive;
 using CinemaTickets.Repositories;
 using CinemaTickets.Utils;
 using System;
@@ -73,6 +74,7 @@ namespace CinemaTickets.Pages.Login
             {
                 _authStore.Store(Models.AccountType.CLIENT, login);
                 MessageBox.Show("Login succeed");
+                LoginReactiveUtils.OnLogin(AccountType.CLIENT);
             }
             else
             {

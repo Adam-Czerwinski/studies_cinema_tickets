@@ -7,6 +7,14 @@
         mc:Ignorable="d"
         Title="Cinema Tickets" Height="450" Width="800">
     <Grid>
-        <ContentControl x:Name="MainContentControl"/>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="9*"/>
+        </Grid.RowDefinitions>
+        <DockPanel Grid.Row="0" LastChildFill="False">
+            <Button Grid.Row="0" Visibility="Hidden" x:Name="LogoutButton" DockPanel.Dock="Right"
+                    Click="OnLogoutClick"/>
+        </DockPanel>
+        <ContentControl Grid.Row="1" x:Name="MainContentControl"/>
     </Grid>
 </Window>

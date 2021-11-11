@@ -1,4 +1,6 @@
 ﻿using CinemaTickets.Authentication;
+using CinemaTickets.Models;
+using CinemaTickets.Reactive;
 using CinemaTickets.Repositories;
 using CinemaTickets.Utils;
 using System;
@@ -61,11 +63,12 @@ namespace CinemaTickets.Pages.Login
             SignInLoginButton.IsEnabled = false;
             var login = LoginTextBox.Text;
             var password = PasswordBox.Password;
-            bool authenticated = _authService.Authenticate(Models.AccountType.EMPLOYEE, login, password);
+            bool authenticated = _authService.Authenticate(AccountType.EMPLOYEE, login, password);
             if (authenticated)
             {
-                _authStore.Store(Models.AccountType.EMPLOYEE, login);
+                _authStore.Store(AccountType.EMPLOYEE, login);
                 MessageBox.Show("Login succeed");
+                LoginReactiveUtils.OnLogin(AccountType.CLIENT);
             }
             else
             {
