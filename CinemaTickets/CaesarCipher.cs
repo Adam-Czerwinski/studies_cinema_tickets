@@ -8,14 +8,15 @@ namespace CinemaTickets
 {
     public class CaesarCipher
     {
+        private readonly static char[] alphabet = new char[] { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+             'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '1', '2', '3', '5', '6', '7', '8', '9', '0', '!','@','#','$','%','^','&','*','(',')'};
+
         private CaesarCipher()
         {
 
         }
         public static string Encrypt(char[] secretMessage, int key)
         {
-            char[] alphabet = new char[] { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
-
             int length = secretMessage.Length;
             //Console.WriteLine(length);
             char[] encryptedMessage = new char[length];
@@ -36,7 +37,6 @@ namespace CinemaTickets
 
         public static string Decrypt(char[] secretMessage, int key)
         {
-            char[] alphabet = new char[] { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
 
             int length = secretMessage.Length;
             //Console.WriteLine(length);

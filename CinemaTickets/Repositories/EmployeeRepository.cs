@@ -29,6 +29,16 @@ namespace CinemaTickets.Repositories
             return employee;
         }
 
+        public bool ExistsByLoginIgnoreCase(string login)
+        {
+            return _context.Employees.Any(employee => employee.Login.ToLower() == login.ToLower());
+        }
+
+        public Employee? GetByLogin(string login)
+        {
+            return _context.Employees.SingleOrDefault(employee => login.Equals(employee.Login));
+        }
+
         public List<Employee> GetEmployees()
         {
             return _context.Employees.ToList();

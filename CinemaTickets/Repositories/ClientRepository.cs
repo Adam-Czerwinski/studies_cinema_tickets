@@ -29,9 +29,14 @@ namespace CinemaTickets.Repositories
             return client;
         }
 
-        public bool ExistsByLogin(string login)
+        public bool ExistsByLoginIgnoreCase(string login)
         {
-            return _context.Clients.Any(client => login.Equals(client.Login, StringComparison.OrdinalIgnoreCase));
+            return _context.Clients.Any(client => client.Login.ToLower() == login.ToLower());
+        }
+
+        public Client? GetByLogin(string login)
+        {
+            return _context.Clients.SingleOrDefault(client => login.Equals(client.Login));
         }
     }
 }

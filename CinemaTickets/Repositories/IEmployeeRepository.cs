@@ -14,5 +14,9 @@ namespace CinemaTickets.Repositories
         Task RemoveEmployeeAsync(Employee employee);
 
         List<Employee> GetEmployees();
+
+        bool ExistsByLoginIgnoreCase(string login);
+
+        Employee? GetByLogin(string login);  
     }
 }

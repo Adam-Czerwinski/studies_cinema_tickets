@@ -11,6 +11,8 @@ namespace CinemaTickets.Repositories
     {
         Task<Client> AddClientAsync(Client client);
 
-        bool ExistsByLogin(string login);
+        bool ExistsByLoginIgnoreCase(string login);
+
+        Client? GetByLogin(string login);   
     }
 }

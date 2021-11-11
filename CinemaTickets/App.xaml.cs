@@ -35,6 +35,7 @@ namespace CinemaTickets
 
             services.AddScoped<IPasswordCryption, PasswordCryption>();
             services.AddScoped<IAuthStore, AuthStore>();
+            services.AddScoped<IAuthService, AuthService>();
         }
 
         private void OnStartup(object sender, StartupEventArgs e)
