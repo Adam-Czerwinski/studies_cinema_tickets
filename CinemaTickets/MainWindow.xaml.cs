@@ -94,7 +94,8 @@ namespace CinemaTickets
 
             var HomeButton = new Button
             {
-                Content = "Home"
+                Content = "Home",
+                MinWidth = 120
             };
             HomeButton.Click += OnHomeClick;
             NavigationStackPanel.Children.Add(HomeButton);
@@ -102,22 +103,26 @@ namespace CinemaTickets
             {
                 var MoviesButton = new Button
                 {
-                    Content = "Movies"
+                    Content = "Movies",
+                    MinWidth = 120
                 };
                 MoviesButton.Click += OnMoviesClick;
                 var EmployeesButton = new Button
                 {
-                    Content = "Employees"
+                    Content = "Employees",
+                    MinWidth = 120
                 };
                 EmployeesButton.Click += OnEmployeesClick;
                 var HallsButton = new Button
                 {
-                    Content = "Halls"
+                    Content = "Halls",
+                    MinWidth = 120
                 };
                 HallsButton.Click += OnHallsClick;
                 var SeancesButton = new Button
                 {
-                    Content = "Seances"
+                    Content = "Seances",
+                    MinWidth = 120
                 };
                 SeancesButton.Click += OnSeancesClick;
                 NavigationStackPanel.Children.Add(MoviesButton);

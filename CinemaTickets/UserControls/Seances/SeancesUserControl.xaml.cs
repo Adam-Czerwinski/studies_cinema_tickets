@@ -57,8 +57,12 @@ namespace CinemaTickets.UserControls.Seances
 
         private void ShowSeances()
         {
+            SeancesWrapPanel.Children.Clear();
             List<MoviesHall> seances = _seanceRepository.GetSeances();
-            int i = 2;
+            foreach (var seance in seances)
+            {
+                SeancesWrapPanel.Children.Add(new SingleSeanceUserControl(seance));
+            }
         }
 
         private void OnAddSeanceClick(object sender, RoutedEventArgs e)

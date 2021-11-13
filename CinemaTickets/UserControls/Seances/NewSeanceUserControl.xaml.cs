@@ -58,8 +58,6 @@ namespace CinemaTickets.UserControls.Seances
                     EndTime = ((DateTime)startTime).AddMinutes(movie.Duration),
                     IdMovie = (long)movie.Id,
                     IdHall = (long)hall.Id,
-                    IdMovieNavigation = movie,
-                    IdHallNavigation = hall
                 };
                 SeanceReactiveUtils.OnSaveSeance(seance);
             }

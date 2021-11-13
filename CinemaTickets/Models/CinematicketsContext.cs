@@ -28,7 +28,7 @@ namespace CinemaTickets.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+
             }
         }
 
@@ -40,7 +40,7 @@ namespace CinemaTickets.Models
             {
                 entity.ToTable("clients");
 
-                entity.HasIndex(e => e.Login, "UQ__clients__7838F272340C5F09")
+                entity.HasIndex(e => e.Login, "UQ__clients__7838F272B7B79CD7")
                     .IsUnique();
 
                 entity.Property(e => e.Id).HasColumnName("id");
@@ -60,28 +60,41 @@ namespace CinemaTickets.Models
 
             modelBuilder.Entity<ClientsMoviesHall>(entity =>
             {
-                entity.HasNoKey();
+                entity.HasKey(e => new { e.IdClient, e.IdMovie, e.IdHall })
+                    .HasName("PK_CLIENTS_MOVIES_HALLS");
 
                 entity.ToTable("clients_movies_halls");
 
                 entity.Property(e => e.IdClient).HasColumnName("id_client");
 
-                entity.Property(e => e.IdHall).HasColumnName("id_hall");
-
                 entity.Property(e => e.IdMovie).HasColumnName("id_movie");
 
+                entity.Property(e => e.IdHall).HasColumnName("id_hall");
+
                 entity.HasOne(d => d.IdClientNavigation)
-                    .WithMany()
+                    .WithMany(p => p.ClientsMoviesHalls)
                     .HasForeignKey(d => d.IdClient)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("clients_movies_halls_fk0");
+
+                entity.HasOne(d => d.IdHallNavigation)
+                    .WithMany(p => p.ClientsMoviesHalls)
+                    .HasForeignKey(d => d.IdHall)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("clients_movies_halls_fk2");
+
+                entity.HasOne(d => d.IdMovieNavigation)
+                    .WithMany(p => p.ClientsMoviesHalls)
+                    .HasForeignKey(d => d.IdMovie)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("clients_movies_halls_fk1");
             });
 
             modelBuilder.Entity<Employee>(entity =>
             {
                 entity.ToTable("employees");
 
-                entity.HasIndex(e => e.Login, "UQ__employee__7838F2727FB14FCF")
+                entity.HasIndex(e => e.Login, "UQ__employee__7838F272D2760A53")
                     .IsUnique();
 
                 entity.Property(e => e.Id).HasColumnName("id");
@@ -143,30 +156,31 @@ namespace CinemaTickets.Models
 
             modelBuilder.Entity<MoviesHall>(entity =>
             {
-                entity.HasNoKey();
+                entity.HasKey(e => new { e.IdMovie, e.IdHall })
+                    .HasName("PK_MOVIES_HALLS");
 
                 entity.ToTable("movies_halls");
+
+                entity.Property(e => e.IdMovie).HasColumnName("id_movie");
+
+                entity.Property(e => e.IdHall).HasColumnName("id_hall");
 
                 entity.Property(e => e.EndTime)
                     .HasColumnType("datetime")
                     .HasColumnName("end_time");
-
-                entity.Property(e => e.IdHall).HasColumnName("id_hall");
-
-                entity.Property(e => e.IdMovie).HasColumnName("id_movie");
 
                 entity.Property(e => e.StartTime)
                     .HasColumnType("datetime")
                     .HasColumnName("start_time");
 
                 entity.HasOne(d => d.IdHallNavigation)
-                    .WithMany()
+                    .WithMany(p => p.MoviesHalls)
                     .HasForeignKey(d => d.IdHall)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("movies_halls_fk1");
 
                 entity.HasOne(d => d.IdMovieNavigation)
-                    .WithMany()
+                    .WithMany(p => p.MoviesHalls)
                     .HasForeignKey(d => d.IdMovie)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("movies_halls_fk0");

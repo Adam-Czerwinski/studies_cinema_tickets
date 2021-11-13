@@ -7,9 +7,18 @@ namespace CinemaTickets.Models
 {
     public partial class Hall
     {
+        public Hall()
+        {
+            ClientsMoviesHalls = new HashSet<ClientsMoviesHall>();
+            MoviesHalls = new HashSet<MoviesHall>();
+        }
+
         public long? Id { get; set; }
         public int RoomNumber { get; set; }
         public int Size { get; set; }
+
+        public virtual ICollection<ClientsMoviesHall> ClientsMoviesHalls { get; set; }
+        public virtual ICollection<MoviesHall> MoviesHalls { get; set; }
 
         internal bool IsValid()
         {

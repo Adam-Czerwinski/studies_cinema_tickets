@@ -12,5 +12,7 @@ namespace CinemaTickets.Models
         public long IdHall { get; set; }
 
         public virtual Client IdClientNavigation { get; set; }
+        public virtual Hall IdHallNavigation { get; set; }
+        public virtual Movie IdMovieNavigation { get; set; }
     }
 }
