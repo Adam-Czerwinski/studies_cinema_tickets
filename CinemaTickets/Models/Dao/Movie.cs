@@ -18,5 +18,10 @@ namespace CinemaTickets.Models
                 && Duration is > 0 &&
                 Year != new DateTime();
         }
+
+        public override string ToString()
+        {
+            return $"{Title} ({Year.Year})";
+        }
     }
 }

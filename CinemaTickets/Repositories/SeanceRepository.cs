@@ -24,7 +24,12 @@ namespace CinemaTickets.Repositories
 
         public List<MoviesHall> GetSeances()
         {
-            return _context.MoviesHalls.AsNoTracking().ToList();
+            return _context.MoviesHalls.AsNoTracking()
+                .Include(seance => seance.IdHallNavigation)
+                .AsNoTracking()
+                .Include(seance => seance.IdMovieNavigation)
+                .AsNoTracking()
+                .ToList();
         }
 
         public async Task RemoveSeanceAsync(MoviesHall moviesHall)

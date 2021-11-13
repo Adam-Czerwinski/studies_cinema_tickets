@@ -12,6 +12,7 @@ using CinemaTickets.UserControls.Movies;
 using System.Reactive.Linq;
 using CinemaTickets.UserControls.Employees;
 using CinemaTickets.UserControls.Halls;
+using CinemaTickets.UserControls.Seances;
 
 namespace CinemaTickets
 {
@@ -27,8 +28,9 @@ namespace CinemaTickets
         private readonly IPasswordCryption _passwordCryption;
         private readonly IMovieRepository _movieRepository;
         private readonly IHallRepository _hallRepository;
+        private readonly ISeanceRepository _seanceRepository;
 
-        public MainWindow(IAuthStore authStore, IAuthService authService, IClientRepository clientRepository, IPasswordCryption passwordCryption, IEmployeeRepository employeeRepository, IMovieRepository movieRepository, IHallRepository hallRepository)
+        public MainWindow(IAuthStore authStore, IAuthService authService, IClientRepository clientRepository, IPasswordCryption passwordCryption, IEmployeeRepository employeeRepository, IMovieRepository movieRepository, IHallRepository hallRepository, ISeanceRepository seanceRepository)
         {
             _authStore = authStore;
             _authService = authService;
@@ -37,6 +39,7 @@ namespace CinemaTickets
             _employeeRepository = employeeRepository;
             _movieRepository = movieRepository;
             _hallRepository = hallRepository;
+            _seanceRepository = seanceRepository;
             InitializeComponent();
             InitContentControl();
         }
@@ -112,9 +115,15 @@ namespace CinemaTickets
                     Content = "Halls"
                 };
                 HallsButton.Click += OnHallsClick;
+                var SeancesButton = new Button
+                {
+                    Content = "Seances"
+                };
+                SeancesButton.Click += OnSeancesClick;
                 NavigationStackPanel.Children.Add(MoviesButton);
                 NavigationStackPanel.Children.Add(EmployeesButton);
                 NavigationStackPanel.Children.Add(HallsButton);
+                NavigationStackPanel.Children.Add(SeancesButton);
             }
             else if (_authStore.Type == AccountType.CLIENT)
             {
@@ -134,6 +143,7 @@ namespace CinemaTickets
                     button.Click -= OnMoviesClick;
                     button.Click -= OnEmployeesClick;
                     button.Click -= OnHallsClick;
+                    button.Click -= OnSeancesClick;
                 }
             }
             NavigationStackPanel.Children.Clear();
@@ -159,6 +169,16 @@ namespace CinemaTickets
             MainContentControl.Content = new HallsUserControl(_hallRepository);
         }
 
+        private void ShowSeances()
+        {
+            if (_authStore.Login == null)
+            {
+                throw new NotLoggedException();
+            }
+            DisposeCurrentMainContentControl();
+            MainContentControl.Content = new SeancesUserControl(_movieRepository, _hallRepository, _seanceRepository);
+        }
+
         private void ShowMovies()
         {
             if (_authStore.Login == null)
@@ -177,6 +197,11 @@ namespace CinemaTickets
             }
             DisposeCurrentMainContentControl();
             MainContentControl.Content = new HomeUserControl(_authStore.Login);
+        }
+
+        private void OnSeancesClick(object sender, RoutedEventArgs e)
+        {
+            ShowSeances();
         }
 
         private void OnHallsClick(object sender, RoutedEventArgs e)

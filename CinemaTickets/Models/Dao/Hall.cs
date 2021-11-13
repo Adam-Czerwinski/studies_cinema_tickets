@@ -15,5 +15,10 @@ namespace CinemaTickets.Models
         {
             return RoomNumber > 0 && Size > 0;
         }
+
+        public override string ToString()
+        {
+            return $"Room: {RoomNumber}, Size: {Size}";
+        }
     }
 }
