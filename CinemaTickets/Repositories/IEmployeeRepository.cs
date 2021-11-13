@@ -11,6 +11,8 @@ namespace CinemaTickets.Repositories
     {
         Task<Employee> AddEmployeeAsync(Employee employee);
 
+        Task<Employee> UpdateEmployeeAsync(Employee employee);
+
         Task RemoveEmployeeAsync(Employee employee);
 
         List<Employee> GetEmployees();

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using Microsoft.EntityFrameworkCore;
 namespace CinemaTickets.Repositories
 {
     internal class MovieRepository : IMovieRepository
@@ -19,12 +19,15 @@ namespace CinemaTickets.Repositories
         {
             _context.Movies.Add(movie);
             await _context.SaveChangesAsync();
+            _context.Entry(movie).State = EntityState.Detached;
             return movie;
         }
 
         public List<Movie> GetMovies()
         {
-            return _context.Movies.ToList();
+            return _context.Movies
+                .AsNoTracking()
+                .ToList();
         }
 
         public async Task RemoveMovieAsync(Movie movie)
@@ -37,6 +40,7 @@ namespace CinemaTickets.Repositories
         {
             _context.Movies.Update(movie);
             await _context.SaveChangesAsync();
+            _context.Entry(movie).State = EntityState.Detached;
             return movie;
         }
     }

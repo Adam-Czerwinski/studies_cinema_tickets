@@ -15,7 +15,6 @@ namespace CinemaTickets.Reactive
 
         private LoginReactiveUtils()
         {
-
         }
 
         public static void OnLogin(AccountType accountType)

@@ -11,5 +11,12 @@ namespace CinemaTickets.Models
         public string Title { get; set; }
         public DateTime Year { get; set; }
         public int Duration { get; set; }
+
+        public bool IsValid()
+        {
+            return !string.IsNullOrWhiteSpace(Title)
+                && Duration is > 0 &&
+                Year != new DateTime();
+        }
     }
 }

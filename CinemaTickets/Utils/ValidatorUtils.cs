@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace CinemaTickets.Utils
@@ -51,6 +52,12 @@ namespace CinemaTickets.Utils
             }
 
             return true;
+        }
+
+        public static bool IsNumber(string text)
+        {
+            Regex regex = new("[^0-9]+");
+            return regex.IsMatch(text);
         }
     }
 }

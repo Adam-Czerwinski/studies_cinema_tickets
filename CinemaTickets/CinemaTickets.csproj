@@ -8,10 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="C:\Users\Adam\AppData\Local\Temp\MetadataAsSource\b4a8ac88dd0b4eb1b6642ae5013fec2e\a8b68dae3e4445d49f0fd0a7e23c0783\Subject.cs" Link="Subject.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.11">
       <PrivateAssets>all</PrivateAssets>

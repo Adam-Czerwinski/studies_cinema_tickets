@@ -15,43 +15,30 @@ namespace CinemaTickets
         {
 
         }
-        public static string Encrypt(char[] secretMessage, int key)
+
+        private static char Cipher(char ch, int key)
         {
-            int length = secretMessage.Length;
-            //Console.WriteLine(length);
-            char[] encryptedMessage = new char[length];
-            for (int i = 0; i < secretMessage.Length; i++)
+            if (!char.IsLetter(ch))
             {
-                var letter = secretMessage[i];
-                int index = Array.IndexOf(alphabet, letter);
-                int newIndex = (key + index) % 26;
-                char newLetter = alphabet[newIndex];
-                encryptedMessage[i] = newLetter;
-                //Console.WriteLine($"{letter}, {index}");
+
+                return ch;
             }
 
-            string enMessage = string.Join("", encryptedMessage);
-            //Console.WriteLine(enMessage);
-            return enMessage;
+            char d = char.IsUpper(ch) ? 'A' : 'a';
+            return (char)((((ch + key) - d) % 26) + d);
+        }
+        public static string Encrypt(char[] secretMessage, int key)
+        {
+            string output = string.Empty;
+
+            foreach (char ch in secretMessage) { output += Cipher(ch, key); }
+
+            return output;
         }
 
         public static string Decrypt(char[] secretMessage, int key)
         {
-
-            int length = secretMessage.Length;
-            //Console.WriteLine(length);
-            char[] encryptedMessage = new char[length];
-            for (int i = 0; i < secretMessage.Length; i++)
-            {
-                var letter = secretMessage[i];
-                int index = Array.IndexOf(alphabet, letter);
-                int newIndex = (index - key) % 26;
-                char newLetter = alphabet[newIndex];
-                encryptedMessage[i] = newLetter;
-            }
-
-            string enMessage = String.Join("", encryptedMessage);
-            return enMessage;
+            return Encrypt(secretMessage, 26 - key);
         }
 
     }

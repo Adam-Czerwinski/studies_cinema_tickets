@@ -8,10 +8,11 @@
         Title="Cinema Tickets" Height="450" Width="800">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition/>
+            <RowDefinition MinHeight="35"/>
             <RowDefinition Height="9*"/>
         </Grid.RowDefinitions>
         <DockPanel Grid.Row="0" LastChildFill="False">
+            <StackPanel x:Name="NavigationStackPanel" Orientation="Horizontal"/>
             <Button Grid.Row="0" Visibility="Hidden" x:Name="LogoutButton" DockPanel.Dock="Right"
                     Click="OnLogoutClick"/>
         </DockPanel>

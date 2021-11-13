@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using Microsoft.EntityFrameworkCore;
 namespace CinemaTickets.Repositories
 {
     public class HallRepository : IHallRepository
@@ -24,7 +24,7 @@ namespace CinemaTickets.Repositories
 
         public List<Hall> GetHalls()
         {
-            return _context.Halls.ToList();
+            return _context.Halls.AsNoTracking().ToList();
         }
 
         public async Task RemoveHallAsync(Hall hall)

@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using Microsoft.EntityFrameworkCore;
 namespace CinemaTickets.Repositories
 {
     public class ClientRepository : IClientRepository
@@ -36,7 +36,7 @@ namespace CinemaTickets.Repositories
 
         public Client? GetByLogin(string login)
         {
-            return _context.Clients.SingleOrDefault(client => login.Equals(client.Login));
+            return _context.Clients.AsNoTracking().SingleOrDefault(client => login.Equals(client.Login));
         }
     }
 }
