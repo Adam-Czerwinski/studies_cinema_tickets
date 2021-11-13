@@ -19,7 +19,18 @@ namespace CinemaTickets.Repositories
         {
             _context.Halls.Add(hall);
             await _context.SaveChangesAsync();
+            _context.Entry(hall).State = EntityState.Detached;
             return hall;
+        }
+
+        public bool ExistsByRoomNumber(int number)
+        {
+            return _context.Halls.Any(hall => hall.RoomNumber == number);
+        }
+
+        public Hall? GetHallById(long? id)
+        {
+            return _context.Halls.AsNoTracking().SingleOrDefault(hall => hall.Id == id);
         }
 
         public List<Hall> GetHalls()
@@ -33,10 +44,12 @@ namespace CinemaTickets.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public Task<Hall> UpdateHallAsync(Hall hall)
+        public async Task<Hall> UpdateHallAsync(Hall hall)
         {
             _context.Halls.Update(hall);
-            throw new NotImplementedException();
+            await _context.SaveChangesAsync();
+            _context.Entry(hall).State = EntityState.Detached;
+            return hall;
         }
     }
 }

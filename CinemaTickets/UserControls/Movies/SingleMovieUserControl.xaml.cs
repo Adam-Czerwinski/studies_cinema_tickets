@@ -26,7 +26,6 @@ namespace CinemaTickets.UserControls.Movies
     public partial class SingleMovieUserControl : UserControl
     {
         private bool _editing = false;
-
         public Movie Movie { get; set; }
         public SingleMovieUserControl(Movie? movie)
         {
@@ -63,7 +62,6 @@ namespace CinemaTickets.UserControls.Movies
 
             SaveButton.IsEnabled = _editing && IsValidMovie();
         }
-
 
         private bool IsValidMovie()
         {

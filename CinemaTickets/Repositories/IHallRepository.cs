@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CinemaTickets.Repositories
 {
-    internal interface IHallRepository
+    public interface IHallRepository
     {
         Task<Hall> AddHallAsync(Hall hall);
 
@@ -16,5 +16,8 @@ namespace CinemaTickets.Repositories
         Task RemoveHallAsync(Hall hall);
 
         List<Hall> GetHalls();
+
+        bool ExistsByRoomNumber(int number);
+        Hall? GetHallById(long? id);
     }
 }

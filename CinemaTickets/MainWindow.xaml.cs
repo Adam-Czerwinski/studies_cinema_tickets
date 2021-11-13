@@ -11,6 +11,7 @@ using System.Windows.Controls;
 using CinemaTickets.UserControls.Movies;
 using System.Reactive.Linq;
 using CinemaTickets.UserControls.Employees;
+using CinemaTickets.UserControls.Halls;
 
 namespace CinemaTickets
 {
@@ -25,8 +26,9 @@ namespace CinemaTickets
         private readonly IEmployeeRepository _employeeRepository;
         private readonly IPasswordCryption _passwordCryption;
         private readonly IMovieRepository _movieRepository;
+        private readonly IHallRepository _hallRepository;
 
-        public MainWindow(IAuthStore authStore, IAuthService authService, IClientRepository clientRepository, IPasswordCryption passwordCryption, IEmployeeRepository employeeRepository, IMovieRepository movieRepository)
+        public MainWindow(IAuthStore authStore, IAuthService authService, IClientRepository clientRepository, IPasswordCryption passwordCryption, IEmployeeRepository employeeRepository, IMovieRepository movieRepository, IHallRepository hallRepository)
         {
             _authStore = authStore;
             _authService = authService;
@@ -34,6 +36,7 @@ namespace CinemaTickets
             _passwordCryption = passwordCryption;
             _employeeRepository = employeeRepository;
             _movieRepository = movieRepository;
+            _hallRepository = hallRepository;
             InitializeComponent();
             InitContentControl();
         }
@@ -146,6 +149,16 @@ namespace CinemaTickets
             MainContentControl.Content = new EmployeesUserControl(_employeeRepository, _passwordCryption);
         }
 
+        private void ShowHalls()
+        {
+            if (_authStore.Login == null || _authStore.Type != AccountType.EMPLOYEE)
+            {
+                throw new NotLoggedException();
+            }
+            DisposeCurrentMainContentControl();
+            MainContentControl.Content = new HallsUserControl(_hallRepository);
+        }
+
         private void ShowMovies()
         {
             if (_authStore.Login == null)
@@ -168,7 +181,7 @@ namespace CinemaTickets
 
         private void OnHallsClick(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            ShowHalls();
         }
 
         private void OnEmployeesClick(object sender, RoutedEventArgs e)

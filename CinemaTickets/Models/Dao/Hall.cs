@@ -10,5 +10,10 @@ namespace CinemaTickets.Models
         public long? Id { get; set; }
         public int RoomNumber { get; set; }
         public int Size { get; set; }
+
+        internal bool IsValid()
+        {
+            return RoomNumber > 0 && Size > 0;
+        }
     }
 }
