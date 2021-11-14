@@ -17,6 +17,12 @@ namespace CinemaTickets.Reactive
         private static readonly Subject<NewSeanceUserControl> CancelEditSeanceSubject = new();
         public static readonly IObservable<NewSeanceUserControl> CancelEditSeanceObservable = CancelEditSeanceSubject;
 
+
+        private static readonly Subject<MoviesHall> AttendSeanceSubject = new();
+        public static readonly IObservable<MoviesHall> AttendSeanceObservable = AttendSeanceSubject;
+
+        private static readonly Subject<MoviesHall> CancelAttendSeanceSubject = new();
+        public static readonly IObservable<MoviesHall> CancelAttendSeanceObservable = CancelAttendSeanceSubject;
         private SeanceReactiveUtils()
         {
         }
@@ -29,6 +35,16 @@ namespace CinemaTickets.Reactive
         public static void OnSaveSeance(MoviesHall seance)
         {
             SaveSeanceSubject.OnNext(seance);
+        }
+
+        public static void OnAttendSeance(MoviesHall seance)
+        {
+            AttendSeanceSubject.OnNext(seance);
+        }
+
+        public static void OnCancelAttendSeance(MoviesHall seance)
+        {
+            CancelAttendSeanceSubject.OnNext(seance);
         }
     }
 }

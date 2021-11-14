@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CinemaTickets.Repositories
 {
-    public interface IMovieRepository
+    public interface IMovieRepository : IDetachable
     {
         Task<Movie> AddMovieAsync(Movie movie);
 
@@ -16,5 +16,7 @@ namespace CinemaTickets.Repositories
         Task RemoveMovieAsync(Movie movie);
 
         List<Movie> GetMovies();
+
+        bool IsMovieUsed(long id);
     }
 }

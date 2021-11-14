@@ -20,7 +20,7 @@ namespace CinemaTickets.Authentication
             _employeeRepository = employeeRepository;
             _clientRepository = clientRepository;
         }
-        public bool Authenticate(AccountType type, string login, string password)
+        public long? Authenticate(AccountType type, string login, string password)
         {
             if (AccountType.CLIENT == type)
             {
@@ -32,36 +32,50 @@ namespace CinemaTickets.Authentication
             }
         }
 
-        private bool AuthenticateEmployee(string login, string password)
+        private long? AuthenticateEmployee(string login, string password)
         {
             if (!_employeeRepository.ExistsByLoginIgnoreCase(login))
             {
-                return false;
+                return null;
             }
 
             Employee? employee = _employeeRepository.GetByLogin(login);
             if (employee is null)
             {
-                return false;
+                return null;
             }
 
-            return _passwordCryption.Matches(password, employee.Password);
+            if (_passwordCryption.Matches(password, employee.Password))
+            {
+                return employee.Id;
+            }
+            else
+            {
+                return null;
+            }
         }
 
-        private bool AuthenticateClient(string login, string password)
+        private long? AuthenticateClient(string login, string password)
         {
             if (!_clientRepository.ExistsByLoginIgnoreCase(login))
             {
-                return false;
+                return null;
             }
 
             Client? client = _clientRepository.GetByLogin(login);
             if (client is null)
             {
-                return false;
+                return null;
             }
 
-            return _passwordCryption.Matches(password, client.Password);
+            if (_passwordCryption.Matches(password, client.Password))
+            {
+                return client.Id;
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

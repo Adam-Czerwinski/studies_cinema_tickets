@@ -23,6 +23,11 @@ namespace CinemaTickets.Repositories
             return movie;
         }
 
+        public void Detach(object entity)
+        {
+            _context.Entry(entity).State = EntityState.Detached;
+        }
+
         public List<Movie> GetMovies()
         {
             return _context.Movies
@@ -34,6 +39,11 @@ namespace CinemaTickets.Repositories
         {
             _context.Movies.Remove(movie);
             await _context.SaveChangesAsync();
+        }
+
+        public bool IsMovieUsed(long id)
+        {
+            return _context.MoviesHalls.AsNoTracking().Any(seance => seance.IdMovie == id);
         }
 
         public async Task<Movie> UpdateMovieAsync(Movie movie)

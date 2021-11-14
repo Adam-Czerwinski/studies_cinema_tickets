@@ -11,7 +11,8 @@ namespace CinemaTickets.Authentication
     {
         string? Login { get; }
         AccountType? Type { get; }
-        void Store(AccountType type, string login);
+        long? Id { get; }
+        void Store(AccountType type, string login, long id);
 
         bool IsLogged();
 

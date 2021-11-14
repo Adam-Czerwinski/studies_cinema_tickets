@@ -17,6 +17,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Reactive.Linq;
+using CinemaTickets.Authentication;
+using CinemaTickets.Models;
+
 namespace CinemaTickets.UserControls.Movies
 {
     /// <summary>
@@ -26,58 +29,72 @@ namespace CinemaTickets.UserControls.Movies
     {
         private readonly Subject<object?> _destroySubject = new();
         private readonly IMovieRepository _movieRepository;
+        private readonly IAuthStore _authStore;
         private bool disposedValue;
 
-        public MoviesUserControl(IMovieRepository movieRepository)
+        public MoviesUserControl(IMovieRepository movieRepository, IAuthStore authStore)
         {
             InitializeComponent();
             _movieRepository = movieRepository;
-            MovieReactiveUtils.DeleteMovieObservable.TakeUntil(_destroySubject).Subscribe(async id =>
+            _authStore = authStore;
+            if (_authStore.Type == AccountType.EMPLOYEE)
             {
-                await _movieRepository.RemoveMovieAsync(new()
+                AddButton.Visibility = Visibility.Visible;
+                MovieReactiveUtils.DeleteMovieObservable.TakeUntil(_destroySubject).Subscribe(async id =>
                 {
-                    Id = id
-                });
-                MessageBox.Show("Deleted successfully");
-                ShowMovies();
-                AddButton.Visibility = Visibility.Visible;
-            });
-            MovieReactiveUtils.CancelEditMovieObservable.TakeUntil(_destroySubject).Subscribe(control =>
-            {
-                ShowMovies();
-                AddButton.Visibility = Visibility.Visible;
-            });
 
-            MovieReactiveUtils.EditMovieObservable.TakeUntil(_destroySubject).Subscribe(control =>
-            {
-                foreach (SingleMovieUserControl movieControl in MoviesWrapPanel.Children)
-                {
-                    if (movieControl == control)
+                    if (_movieRepository.IsMovieUsed(id))
                     {
-                        continue;
+                        MessageBox.Show("Movie is used");
+                        return;
                     }
+                    Movie movie = new()
+                    {
+                        Id = id
+                    };
+                    await _movieRepository.RemoveMovieAsync(movie);
+                    MessageBox.Show("Deleted successfully");
+                    ShowMovies();
+                    AddButton.Visibility = Visibility.Visible;
+                });
+                MovieReactiveUtils.CancelEditMovieObservable.TakeUntil(_destroySubject).Subscribe(control =>
+                {
+                    ShowMovies();
+                    AddButton.Visibility = Visibility.Visible;
+                });
+                MovieReactiveUtils.EditMovieObservable.TakeUntil(_destroySubject).Subscribe(control =>
+                {
+                    foreach (SingleMovieUserControl movieControl in MoviesWrapPanel.Children)
+                    {
+                        if (movieControl == control)
+                        {
+                            continue;
+                        }
 
-                    movieControl.HideButtons();
-                }
-                AddButton.Visibility = Visibility.Hidden;
-            });
-
-            MovieReactiveUtils.SaveMovieObservable.TakeUntil(_destroySubject).Subscribe(async movie =>
+                        movieControl.HideButtons();
+                    }
+                    AddButton.Visibility = Visibility.Hidden;
+                });
+                MovieReactiveUtils.SaveMovieObservable.TakeUntil(_destroySubject).Subscribe(async movie =>
+                {
+                    if (movie.Id is not null)
+                    {
+                        await _movieRepository.UpdateMovieAsync(movie);
+                        MessageBox.Show("Movie has been updated successfully");
+                    }
+                    else
+                    {
+                        await _movieRepository.AddMovieAsync(movie);
+                        MessageBox.Show("Movie has been added successfully");
+                    }
+                    ShowMovies();
+                    AddButton.Visibility = Visibility.Visible;
+                });
+            }
+            else if (_authStore.Type == AccountType.CLIENT)
             {
-                if (movie.Id is not null)
-                {
-                    await _movieRepository.UpdateMovieAsync(movie);
-                    MessageBox.Show("Movie has been updated successfully");
-                }
-                else
-                {
-                    await _movieRepository.AddMovieAsync(movie);
-                    MessageBox.Show("Movie has been added successfully");
-                }
-                ShowMovies();
-                AddButton.Visibility = Visibility.Visible;
-            });
-
+                AddButton.Visibility = Visibility.Hidden;
+            }
             ShowMovies();
         }
 
@@ -86,7 +103,7 @@ namespace CinemaTickets.UserControls.Movies
             MoviesWrapPanel.Children.Clear();
             List<Models.Movie> movies = _movieRepository.GetMovies();
             var singleMovieUserControls = movies.Select(movie =>
-                new SingleMovieUserControl(movie)
+                new SingleMovieUserControl(movie, _authStore.Type != AccountType.EMPLOYEE)
             ).ToList();
             singleMovieUserControls.ForEach(movieUserControl => MoviesWrapPanel.Children.Add(movieUserControl));
 
@@ -98,7 +115,7 @@ namespace CinemaTickets.UserControls.Movies
             {
                 item.HideButtons();
             }
-            MoviesWrapPanel.Children.Add(new SingleMovieUserControl(null));
+            MoviesWrapPanel.Children.Add(new SingleMovieUserControl(null, _authStore.Type != AccountType.EMPLOYEE));
             AddButton.Visibility = Visibility.Hidden;
         }
 

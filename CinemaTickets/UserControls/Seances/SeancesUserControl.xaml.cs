@@ -17,6 +17,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Reactive.Linq;
+using CinemaTickets.Authentication;
+using CinemaTickets.Exceptions;
+
 namespace CinemaTickets.UserControls.Seances
 {
     /// <summary>
@@ -27,43 +30,95 @@ namespace CinemaTickets.UserControls.Seances
         private readonly IMovieRepository _movieRepository;
         private readonly IHallRepository _hallRepository;
         private readonly ISeanceRepository _seanceRepository;
+        private readonly IAuthStore _authStore;
+        private readonly ISeanceRegistrationRepository? _seanceRegistrationRepository;
         private readonly Subject<object?> _destroySubject = new();
         private bool disposedValue;
 
-        public SeancesUserControl(IMovieRepository movieRepository, IHallRepository hallRepository, ISeanceRepository seanceRepository)
+        public SeancesUserControl(IMovieRepository movieRepository, IHallRepository hallRepository, ISeanceRepository seanceRepository,
+            IAuthStore authStore,
+            ISeanceRegistrationRepository? seanceRegistrationRepository
+            )
         {
             InitializeComponent();
             _movieRepository = movieRepository;
             _hallRepository = hallRepository;
             _seanceRepository = seanceRepository;
+            _authStore = authStore;
+            _seanceRegistrationRepository = seanceRegistrationRepository;
 
-            SeanceReactiveUtils.CancelEditSeanceObservable.TakeUntil(_destroySubject).Subscribe(control =>
+            if (_authStore.Type == AccountType.EMPLOYEE)
             {
-                ShowSeances();
                 AddButton.Visibility = Visibility.Visible;
-            });
+                SeanceReactiveUtils.CancelEditSeanceObservable.TakeUntil(_destroySubject).Subscribe(control =>
+                {
+                    ShowSeances();
+                    AddButton.Visibility = Visibility.Visible;
+                });
 
-            SeanceReactiveUtils.SaveSeanceObservable.TakeUntil(_destroySubject).Subscribe(async seance =>
-            {
-                try
+                SeanceReactiveUtils.SaveSeanceObservable.TakeUntil(_destroySubject).Subscribe(async seance =>
                 {
-                    await _seanceRepository.AddSeanceAsync(seance);
-                }
-                catch (Microsoft.EntityFrameworkCore.DbUpdateException ex)
-                {
-                    if (ex.InnerException is Microsoft.Data.SqlClient.SqlException && ex.InnerException.Message.Contains("duplicate key"))
+                    try
                     {
-                        _seanceRepository.Detach(seance);
-                        MessageBox.Show("Seance already exists");
-                        return;
+                        await _seanceRepository.AddSeanceAsync(seance);
                     }
+                    catch (Microsoft.EntityFrameworkCore.DbUpdateException ex)
+                    {
+                        if (ex.InnerException is Microsoft.Data.SqlClient.SqlException && ex.InnerException.Message.Contains("duplicate key"))
+                        {
+                            _seanceRepository.Detach(seance);
+                            MessageBox.Show("Seance already exists");
+                            return;
+                        }
+                    }
+                    MessageBox.Show("Seance has been added successfully");
+                    ShowSeances();
+                    AddButton.Visibility = Visibility.Visible;
                 }
-                MessageBox.Show("Seance has been added successfully");
-                ShowSeances();
-                AddButton.Visibility = Visibility.Visible;
+                );
             }
-            );
+            else
+            {
+                AddButton.Visibility = Visibility.Collapsed;
+                if (_seanceRegistrationRepository is null)
+                {
+                    throw new ArgumentNullException(nameof(seanceRegistrationRepository));
+                }
 
+                SeanceReactiveUtils.AttendSeanceObservable.TakeUntil(_destroySubject).Subscribe(async seance =>
+                {
+                    if (_authStore.Id is null)
+                    {
+                        throw new NotLoggedException();
+                    }
+                    ClientsMoviesHall clientsMoviesHall = new()
+                    {
+                        IdClient = (long)_authStore.Id,
+                        IdHall = seance.IdHall,
+                        IdMovie = seance.IdMovie,
+                    };
+                    await _seanceRegistrationRepository!.AttendAsync(clientsMoviesHall);
+                    MessageBox.Show("Attended");
+                    ShowSeances();
+                });
+
+                SeanceReactiveUtils.CancelAttendSeanceObservable.TakeUntil(_destroySubject).Subscribe(async seance =>
+                {
+                    if (_authStore.Id is null)
+                    {
+                        throw new NotLoggedException();
+                    }
+                    ClientsMoviesHall clientsMoviesHall = new()
+                    {
+                        IdClient = (long)_authStore.Id,
+                        IdHall = seance.IdHall,
+                        IdMovie = seance.IdMovie,
+                    };
+                    await _seanceRegistrationRepository!.RemoveAttendAsync(clientsMoviesHall);
+                    MessageBox.Show("Attend canceled");
+                    ShowSeances();
+                });
+            }
             ShowSeances();
         }
 
@@ -71,10 +126,33 @@ namespace CinemaTickets.UserControls.Seances
         {
             SeancesWrapPanel.Children.Clear();
             List<MoviesHall> seances = _seanceRepository.GetSeances();
-            foreach (var seance in seances)
+
+            if (_authStore.Type == AccountType.EMPLOYEE)
             {
-                SeancesWrapPanel.Children.Add(new SingleSeanceUserControl(seance));
+                foreach (var seance in seances)
+                {
+                    SeancesWrapPanel.Children.Add(new SingleSeanceUserControl(seance));
+                }
             }
+            else
+            {
+                if (_authStore.Id is null)
+                {
+                    throw new NotLoggedException();
+                }
+
+                var clientSeances = _seanceRegistrationRepository!.GetSeances((long)_authStore.Id);
+                foreach (var seance in seances)
+                {
+                    var isAttending = IsAttending(clientSeances, seance.IdMovie, seance.IdHall);
+                    SeancesWrapPanel.Children.Add(new SingleSeanceUserControl(seance, isAttending));
+                }
+            }
+        }
+
+        private bool IsAttending(List<ClientsMoviesHall> clientSeances, long idMoie, long idHall)
+        {
+            return clientSeances.Any(clientSeance => clientSeance.IdMovie == idMoie && clientSeance.IdHall == idHall);
         }
 
         private void OnAddSeanceClick(object sender, RoutedEventArgs e)

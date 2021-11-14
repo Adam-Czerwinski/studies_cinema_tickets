@@ -13,6 +13,8 @@ namespace CinemaTickets.Authentication
         public string? Login { get; private set; }
         public AccountType? Type { get; private set; }
 
+        public long? Id { get; private set; }
+
         public bool IsLogged()
         {
             return Login != null;
@@ -24,10 +26,11 @@ namespace CinemaTickets.Authentication
             Type = null;
         }
 
-        public void Store(AccountType type, string login)
+        public void Store(AccountType type, string login, long id)
         {
             Login = login;
             Type = type;
+            Id = id;
         }
     }
 }

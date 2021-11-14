@@ -39,7 +39,15 @@ namespace CinemaTickets.Repositories
             {
                 return;
             }
+            List<ClientsMoviesHall> odClientSeances = new();
+            foreach (var oldSeance in oldSeances)
+            {
+                List<ClientsMoviesHall> clientsMoviesHalls = _context.ClientsMoviesHalls.Where(clientSeance => clientSeance.IdMovie == oldSeance.IdMovie && clientSeance.IdHall == oldSeance.IdHall).ToList();
+
+                odClientSeances.AddRange(clientsMoviesHalls);
+            }
             _context.RemoveRange(oldSeances);
+            _context.RemoveRange(odClientSeances);
             await _context.SaveChangesAsync();
         }
 

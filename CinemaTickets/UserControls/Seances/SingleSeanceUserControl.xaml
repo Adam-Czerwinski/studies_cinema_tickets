@@ -27,5 +27,6 @@
             <TextBlock Text="End date" Width="100" FontWeight="Bold"/>
             <TextBlock x:Name="EndDateTextBlock" Width="200"/>
         </StackPanel>
+        <Button x:Name="AttendButton" Click="AttendButtonClick"/>
     </StackPanel>
 </UserControl>

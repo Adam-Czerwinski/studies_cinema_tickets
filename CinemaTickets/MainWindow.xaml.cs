@@ -29,8 +29,10 @@ namespace CinemaTickets
         private readonly IMovieRepository _movieRepository;
         private readonly IHallRepository _hallRepository;
         private readonly ISeanceRepository _seanceRepository;
+        private readonly ISeanceRegistrationRepository _seanceRegistrationRepository;
 
-        public MainWindow(IAuthStore authStore, IAuthService authService, IClientRepository clientRepository, IPasswordCryption passwordCryption, IEmployeeRepository employeeRepository, IMovieRepository movieRepository, IHallRepository hallRepository, ISeanceRepository seanceRepository)
+        public MainWindow(IAuthStore authStore, IAuthService authService, IClientRepository clientRepository, IPasswordCryption passwordCryption, IEmployeeRepository employeeRepository, IMovieRepository movieRepository, IHallRepository hallRepository, ISeanceRepository seanceRepository,
+            ISeanceRegistrationRepository seanceRegistrationRepository)
         {
             _authStore = authStore;
             _authService = authService;
@@ -40,6 +42,7 @@ namespace CinemaTickets
             _movieRepository = movieRepository;
             _hallRepository = hallRepository;
             _seanceRepository = seanceRepository;
+            _seanceRegistrationRepository = seanceRegistrationRepository;
             InitializeComponent();
             InitContentControl();
         }
@@ -99,7 +102,7 @@ namespace CinemaTickets
             };
             HomeButton.Click += OnHomeClick;
             NavigationStackPanel.Children.Add(HomeButton);
-            if (_authStore.Type == AccountType.EMPLOYEE)
+            if (_authStore.Type == AccountType.EMPLOYEE || _authStore.Type == AccountType.CLIENT)
             {
                 var MoviesButton = new Button
                 {
@@ -107,6 +110,20 @@ namespace CinemaTickets
                     MinWidth = 120
                 };
                 MoviesButton.Click += OnMoviesClick;
+
+                var SeancesButton = new Button
+                {
+                    Content = "Seances",
+                    MinWidth = 120
+                };
+                SeancesButton.Click += OnSeancesClick;
+
+
+                NavigationStackPanel.Children.Add(MoviesButton);
+                NavigationStackPanel.Children.Add(SeancesButton);
+            }
+            if (_authStore.Type == AccountType.EMPLOYEE)
+            {
                 var EmployeesButton = new Button
                 {
                     Content = "Employees",
@@ -119,20 +136,9 @@ namespace CinemaTickets
                     MinWidth = 120
                 };
                 HallsButton.Click += OnHallsClick;
-                var SeancesButton = new Button
-                {
-                    Content = "Seances",
-                    MinWidth = 120
-                };
-                SeancesButton.Click += OnSeancesClick;
-                NavigationStackPanel.Children.Add(MoviesButton);
+
                 NavigationStackPanel.Children.Add(EmployeesButton);
                 NavigationStackPanel.Children.Add(HallsButton);
-                NavigationStackPanel.Children.Add(SeancesButton);
-            }
-            else if (_authStore.Type == AccountType.CLIENT)
-            {
-
             }
         }
 
@@ -181,7 +187,7 @@ namespace CinemaTickets
                 throw new NotLoggedException();
             }
             DisposeCurrentMainContentControl();
-            MainContentControl.Content = new SeancesUserControl(_movieRepository, _hallRepository, _seanceRepository);
+            MainContentControl.Content = new SeancesUserControl(_movieRepository, _hallRepository, _seanceRepository, _authStore, _seanceRegistrationRepository);
         }
 
         private void ShowMovies()
@@ -191,7 +197,7 @@ namespace CinemaTickets
                 throw new NotLoggedException();
             }
             DisposeCurrentMainContentControl();
-            MainContentControl.Content = new MoviesUserControl(_movieRepository);
+            MainContentControl.Content = new MoviesUserControl(_movieRepository, _authStore);
         }
 
         private void ShowHome()

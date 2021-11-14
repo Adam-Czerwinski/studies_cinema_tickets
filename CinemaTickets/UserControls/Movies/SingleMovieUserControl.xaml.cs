@@ -27,14 +27,17 @@ namespace CinemaTickets.UserControls.Movies
     {
         private bool _editing = false;
         public Movie Movie { get; set; }
-        public SingleMovieUserControl(Movie? movie)
+        public SingleMovieUserControl(Movie? movie, bool readonlyView)
         {
             InitializeComponent();
             if (movie is not null)
             {
                 Movie = movie;
                 LoadContent();
-                SetEditControls(false);
+                if (!readonlyView)
+                {
+                    SetEditControls(false);
+                }
             }
             else
             {
@@ -42,9 +45,16 @@ namespace CinemaTickets.UserControls.Movies
                 {
                     Year = DateTime.Now
                 };
-                SetEditControls(true);
+                if (!readonlyView)
+                {
+                    SetEditControls(true);
+                }
             }
-
+            if (readonlyView)
+            {
+                SetEditControls(false);
+                HideButtons();
+            }
         }
 
         private void SetEditControls(bool edit)

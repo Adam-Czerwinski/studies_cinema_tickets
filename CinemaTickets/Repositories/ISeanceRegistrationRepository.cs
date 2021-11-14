@@ -10,5 +10,7 @@ namespace CinemaTickets.Repositories
     public interface ISeanceRegistrationRepository
     {
         Task<ClientsMoviesHall> AttendAsync(ClientsMoviesHall clientsMoviesHall);
+        List<ClientsMoviesHall> GetSeances(long clientId);
+        Task RemoveAttendAsync(ClientsMoviesHall clientsMoviesHall);
     }
 }

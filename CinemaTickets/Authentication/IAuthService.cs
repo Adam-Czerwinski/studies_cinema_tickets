@@ -9,6 +9,6 @@ namespace CinemaTickets.Authentication
 {
     public interface IAuthService
     {
-        bool Authenticate(AccountType type, string login, string password);
+        long? Authenticate(AccountType type, string login, string password);
     }
 }

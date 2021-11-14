@@ -63,10 +63,10 @@ namespace CinemaTickets.Pages.Login
             SignInLoginButton.IsEnabled = false;
             var login = LoginTextBox.Text;
             var password = PasswordBox.Password;
-            bool authenticated = _authService.Authenticate(AccountType.EMPLOYEE, login, password);
-            if (authenticated)
+            long? id = _authService.Authenticate(AccountType.EMPLOYEE, login, password);
+            if (id is not null)
             {
-                _authStore.Store(AccountType.EMPLOYEE, login);
+                _authStore.Store(AccountType.EMPLOYEE, login, (long)id);
                 MessageBox.Show("Login succeed");
                 LoginReactiveUtils.OnLogin(AccountType.CLIENT);
             }

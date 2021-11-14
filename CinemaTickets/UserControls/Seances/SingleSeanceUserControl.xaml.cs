@@ -1,4 +1,5 @@
 ﻿using CinemaTickets.Models;
+using CinemaTickets.Reactive;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,14 +23,29 @@ namespace CinemaTickets.UserControls.Seances
     public partial class SingleSeanceUserControl : UserControl
     {
         private readonly MoviesHall _seance;
+        private bool? _attending;
         private Movie Movie { get { return _seance.IdMovieNavigation; } }
         private Hall Hall { get { return _seance.IdHallNavigation; } }
 
-        public SingleSeanceUserControl(MoviesHall seance)
+        public SingleSeanceUserControl(MoviesHall seance, bool? attending = null)
         {
             InitializeComponent();
             _seance = seance;
+            _attending = attending;
             LoadContent();
+            ShowButtons();
+        }
+
+        private void ShowButtons()
+        {
+            if (_attending is null)
+            {
+                AttendButton.Visibility = Visibility.Collapsed;
+                return;
+            }
+
+            AttendButton.Visibility = Visibility.Visible;
+            AttendButton.Content = (bool)_attending ? "Cancel attend" : "Attend";
         }
 
         private void LoadContent()
@@ -39,6 +55,28 @@ namespace CinemaTickets.UserControls.Seances
             HallSizeTextBlock.Text = Hall.Size.ToString();
             StartDateTextBlock.Text = _seance.StartTime.ToString();
             EndDateTextBlock.Text = _seance.EndTime.ToString();
+        }
+
+        private void AttendButtonClick(object sender, RoutedEventArgs e)
+        {
+
+            if (_attending is null)
+            {
+                return;
+            }
+
+            if ((bool)_attending)
+            {
+                _attending = false;
+                SeanceReactiveUtils.OnCancelAttendSeance(_seance);
+
+            }
+            else
+            {
+                _attending = true;
+                SeanceReactiveUtils.OnAttendSeance(_seance);
+            }
+            ShowButtons();
         }
     }
 }
