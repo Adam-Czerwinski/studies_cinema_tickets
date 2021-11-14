@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
+  <Class Name="CinemaTickets.Models.Client">
+    <Position X="6.5" Y="0.5" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAEAAAAAAAAAACAAAQAAAAAAA=</HashCode>
+      <FileName>Models\Client.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CinemaTickets.Models.Hall">
+    <Position X="1.5" Y="3.25" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAgAAEAAgAMAAAAAAABAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Hall.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CinemaTickets.Models.Movie">
+    <Position X="6.5" Y="6" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAABAACAEAEAAgAEAAAAAAABAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Movie.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CinemaTickets.Models.ClientsMoviesHall">
+    <Position X="7.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAAAAAAAQEAAAAAAAAAAIAAAEAAAAABAAAAAA=</HashCode>
+      <FileName>Models\ClientsMoviesHall.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="IdHallNavigation" />
+      <Property Name="IdMovieNavigation" />
+      <Property Name="IdClientNavigation" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="CinemaTickets.Models.Employee">
+    <Position X="11" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAgAAAQAAAAAAAACAAAQAAAAAAg=</HashCode>
+      <FileName>Models\Employee.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CinemaTickets.Models.MoviesHall">
+    <Position X="4" Y="7.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAQEAAAAAAAAIAIgAAEAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\MoviesHall.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="IdHallNavigation" />
+      <Property Name="IdMovieNavigation" />
+    </ShowAsAssociation>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
