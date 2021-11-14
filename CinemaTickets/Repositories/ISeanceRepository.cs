@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CinemaTickets.Repositories
 {
-    public interface ISeanceRepository
+    public interface ISeanceRepository : IDetachable
     {
         Task<MoviesHall> AddSeanceAsync(MoviesHall moviesHall);
 

@@ -5,6 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using System.Reactive.Linq;
+using CinemaTickets.Reactive;
+
 namespace CinemaTickets.Repositories
 {
     public class SeanceRepository : ISeanceRepository
@@ -14,12 +17,43 @@ namespace CinemaTickets.Repositories
         public SeanceRepository(CinematicketsContext context)
         {
             _context = context;
+            InitClearScheduler();
         }
+
+        private void InitClearScheduler()
+        {
+            Observable.Interval(TimeSpan.FromSeconds(20)).ExhaustMap(x =>
+            {
+                DeleteOldSeances();
+                return Observable.Return(x);
+            }).Subscribe();
+
+        }
+
+        private async void DeleteOldSeances()
+        {
+            var oldSeances = _context.MoviesHalls.ToList()
+                .Where(seance => seance.EndTime < DateTime.Now)
+                .ToList();
+            if (oldSeances.Count == 0)
+            {
+                return;
+            }
+            _context.RemoveRange(oldSeances);
+            await _context.SaveChangesAsync();
+        }
+
         public async Task<MoviesHall> AddSeanceAsync(MoviesHall moviesHall)
         {
             _context.MoviesHalls.Add(moviesHall);
             await _context.SaveChangesAsync();
+            _context.Entry(moviesHall).State = EntityState.Detached;
             return moviesHall;
+        }
+
+        public void Detach(object entity)
+        {
+            _context.Entry(entity).State = EntityState.Detached;
         }
 
         public List<MoviesHall> GetSeances()
@@ -29,7 +63,7 @@ namespace CinemaTickets.Repositories
                 .AsNoTracking()
                 .Include(seance => seance.IdMovieNavigation)
                 .AsNoTracking()
-                .ToList();
+                .ToList().Where(seance => seance.EndTime >= DateTime.Now).ToList();
         }
 
         public async Task RemoveSeanceAsync(MoviesHall moviesHall)
@@ -42,6 +76,7 @@ namespace CinemaTickets.Repositories
         {
             _context.MoviesHalls.Update(moviesHall);
             await _context.SaveChangesAsync();
+            _context.Entry(moviesHall).State = EntityState.Detached;
             return moviesHall;
         }
     }

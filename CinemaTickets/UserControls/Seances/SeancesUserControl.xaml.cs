@@ -45,7 +45,19 @@ namespace CinemaTickets.UserControls.Seances
 
             SeanceReactiveUtils.SaveSeanceObservable.TakeUntil(_destroySubject).Subscribe(async seance =>
             {
-                await _seanceRepository.AddSeanceAsync(seance);
+                try
+                {
+                    await _seanceRepository.AddSeanceAsync(seance);
+                }
+                catch (Microsoft.EntityFrameworkCore.DbUpdateException ex)
+                {
+                    if (ex.InnerException is Microsoft.Data.SqlClient.SqlException && ex.InnerException.Message.Contains("duplicate key"))
+                    {
+                        _seanceRepository.Detach(seance);
+                        MessageBox.Show("Seance already exists");
+                        return;
+                    }
+                }
                 MessageBox.Show("Seance has been added successfully");
                 ShowSeances();
                 AddButton.Visibility = Visibility.Visible;
