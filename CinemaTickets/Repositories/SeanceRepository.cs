@@ -32,7 +32,7 @@ namespace CinemaTickets.Repositories
 
         private async void DeleteOldSeances()
         {
-            var oldSeances = _context.MoviesHalls.ToList()
+            var oldSeances = _context.MoviesHalls.AsNoTracking().ToList()
                 .Where(seance => seance.EndTime < DateTime.Now)
                 .ToList();
             if (oldSeances.Count == 0)
@@ -42,7 +42,8 @@ namespace CinemaTickets.Repositories
             List<ClientsMoviesHall> odClientSeances = new();
             foreach (var oldSeance in oldSeances)
             {
-                List<ClientsMoviesHall> clientsMoviesHalls = _context.ClientsMoviesHalls.Where(clientSeance => clientSeance.IdMovie == oldSeance.IdMovie && clientSeance.IdHall == oldSeance.IdHall).ToList();
+                List<ClientsMoviesHall> clientsMoviesHalls = _context.ClientsMoviesHalls.AsNoTracking
+                    ().Where(clientSeance => clientSeance.IdMovie == oldSeance.IdMovie && clientSeance.IdHall == oldSeance.IdHall).ToList();
 
                 odClientSeances.AddRange(clientsMoviesHalls);
             }

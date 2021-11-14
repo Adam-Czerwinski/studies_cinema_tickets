@@ -26,6 +26,7 @@ namespace CinemaTickets.Repositories
             }
             _context.Clients.Add(client);
             await _context.SaveChangesAsync();
+            _context.Entry(client).State = EntityState.Detached;
             return client;
         }
 

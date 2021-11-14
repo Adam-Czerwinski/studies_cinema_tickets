@@ -7,17 +7,14 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition/>
-            <RowDefinition/>
+            <RowDefinition Height="9*"/>
         </Grid.RowDefinitions>
 
         <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" Height="20" HorizontalAlignment="Center" VerticalAlignment="Top">
-            <Button x:Name="ClientButton" Content="Klient" Width="100" Click="OnClientClick"/>
-            <Button x:Name="EmployeeButton" Content="Pracownik" Width="100" Click="OnEmployeeClick"/>
+            <Button x:Name="ClientButton" Content="Client" Width="100" Click="OnClientClick"/>
+            <Button x:Name="EmployeeButton" Content="Employee" Width="100" Click="OnEmployeeClick"/>
         </StackPanel>
 
         <ContentControl Grid.Row="1" Grid.Column="0" x:Name="LoginContentControl" />
